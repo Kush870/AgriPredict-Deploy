@@ -248,6 +248,13 @@ def train_models(dataset_path=None, tune_rf=False):
         X = df.drop(columns=[target])
         y = df[target]
         
+        # Subsample to avoid timeouts and OOMs on cloud hosting
+        if len(X) > 50000:
+            print(f"Subsampling dataset from {len(X)} to 50000 rows for faster training...")
+            sample_idx = np.random.RandomState(42).choice(len(X), 50000, replace=False)
+            X = X.iloc[sample_idx]
+            y = y.iloc[sample_idx]
+        
         # Identify categorical and numerical columns
         categorical_cols = ['Region', 'Soil_Type', 'Crop', 'Weather_Condition', 'Fertilizer_Used', 'Irrigation_Used']
         numerical_cols = ['Rainfall_mm', 'Temperature_Celsius', 'Days_to_Harvest']
@@ -581,6 +588,10 @@ def get_learning_curve():
         
         # Prepare data
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+        if len(X_train) > 10000:
+            sample_idx = np.random.RandomState(42).choice(len(X_train), 10000, replace=False)
+            X_train = X_train.iloc[sample_idx]
+            y_train = y_train.iloc[sample_idx]
         
         # Get learning curves for both models
         train_sizes_rf, train_scores_rf, val_scores_rf = learning_curve(
@@ -693,6 +704,10 @@ def get_rf_learning_curve():
         
         # Prepare data
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+        if len(X_train) > 10000:
+            sample_idx = np.random.RandomState(42).choice(len(X_train), 10000, replace=False)
+            X_train = X_train.iloc[sample_idx]
+            y_train = y_train.iloc[sample_idx]
         
         # Get learning curve for RF
         train_sizes, train_scores, val_scores = learning_curve(
@@ -729,6 +744,10 @@ def get_xgb_learning_curve():
         
         # Prepare data
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+        if len(X_train) > 10000:
+            sample_idx = np.random.RandomState(42).choice(len(X_train), 10000, replace=False)
+            X_train = X_train.iloc[sample_idx]
+            y_train = y_train.iloc[sample_idx]
         
         # Get learning curve for XGB
         train_sizes, train_scores, val_scores = learning_curve(
@@ -765,6 +784,10 @@ def get_rf_validation_curve():
         
         # Prepare data
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+        if len(X_train) > 10000:
+            sample_idx = np.random.RandomState(42).choice(len(X_train), 10000, replace=False)
+            X_train = X_train.iloc[sample_idx]
+            y_train = y_train.iloc[sample_idx]
         
         # Get validation curve for n_estimators
         param_range = [5, 10, 25, 50, 100, 200]
@@ -805,6 +828,10 @@ def get_xgb_validation_curve():
         
         # Prepare data
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+        if len(X_train) > 10000:
+            sample_idx = np.random.RandomState(42).choice(len(X_train), 10000, replace=False)
+            X_train = X_train.iloc[sample_idx]
+            y_train = y_train.iloc[sample_idx]
         
         # Get validation curve for n_estimators
         param_range = [5, 10, 25, 50, 100, 200]
@@ -845,12 +872,12 @@ def get_tuned_rf_learning_curve():
         
         # Prepare data
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-        
-        # Subsample to avoid hanging for an hour
         if len(X_train) > 10000:
             sample_idx = np.random.RandomState(42).choice(len(X_train), 10000, replace=False)
             X_train = X_train.iloc[sample_idx]
             y_train = y_train.iloc[sample_idx]
+        
+        # Subsample to avoid hanging for an hour
         
         # Get learning curve for Tuned RF
         train_sizes, train_scores, val_scores = learning_curve(
@@ -887,12 +914,12 @@ def get_tuned_rf_validation_curve():
         
         # Prepare data
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-        
-        # Subsample to avoid hanging for an hour
         if len(X_train) > 10000:
             sample_idx = np.random.RandomState(42).choice(len(X_train), 10000, replace=False)
             X_train = X_train.iloc[sample_idx]
             y_train = y_train.iloc[sample_idx]
+        
+        # Subsample to avoid hanging for an hour
         
         # Get validation curve for n_estimators
         param_range = [5, 10, 25, 50, 100, 200]
