@@ -945,10 +945,10 @@ def get_model_comparison():
         print(f"Model comparison error: {str(e)}")
         return jsonify({'error': str(e)}), 500
 
+# Load or create models on startup
+load_or_create_models()
+
 if __name__ == '__main__':
-    # Load or create models on startup
-    load_or_create_models()
-    
     # Run the app
     print("Starting AgriPredict server on http://localhost:5000")
     app.run(debug=True, host='localhost', port=5000)
